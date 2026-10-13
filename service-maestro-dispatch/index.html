@@ -1,0 +1,258 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Service Maestro Dispatch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=JetBrains+Mono:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --ground:#F3F5F7; --surface:#FFFFFF; --ink:#111A24; --muted:#56626F; --line:#D8DEE4;
+  --accent:#0D5C8C; --accent-soft:#E1EEF6; --done:#2E8B57; --done-soft:#E3F2EA;
+  --todo-bg:#FFF6D6; --todo-line:#D9B64A; --todo-ink:#5E4A06;
+  --display:"Archivo", "Arial Narrow", system-ui, sans-serif;
+  --body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0F151C; --surface:#17202A; --ink:#E8EDF2; --muted:#9AA7B4; --line:#2A3642;
+    --accent:#5AA9DC; --accent-soft:#16324A; --done:#5CC08A; --done-soft:#173A29;
+    --todo-bg:#3A3212; --todo-line:#9C8430; --todo-ink:#F3E2A2;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0F151C; --surface:#17202A; --ink:#E8EDF2; --muted:#9AA7B4; --line:#2A3642;
+  --accent:#5AA9DC; --accent-soft:#16324A; --done:#5CC08A; --done-soft:#173A29;
+  --todo-bg:#3A3212; --todo-line:#9C8430; --todo-ink:#F3E2A2;
+}
+*{box-sizing:border-box}
+body{background:var(--ground); color:var(--ink); font-family:var(--body); font-size:18px; line-height:1.6; margin:0}
+.wrap{max-width:1040px; margin:0 auto; padding-inline:24px}
+.prose{max-width:680px}
+h1,h2,h3{font-family:var(--display); text-wrap:balance; margin:0; line-height:1.08}
+h1{font-size:clamp(2.4rem,6vw,4.2rem); font-weight:800; letter-spacing:-0.025em}
+h2{font-size:clamp(1.6rem,3.2vw,2.3rem); font-weight:700; letter-spacing:-0.015em}
+h3{font-size:1.1rem; font-weight:700}
+p{margin:0}
+a{color:var(--accent); text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+.label{font-family:var(--mono); font-size:.74rem; letter-spacing:.06em; text-transform:uppercase; color:var(--accent)}
+.stack{display:flex; flex-direction:column; gap:16px}
+section{padding-block:64px; border-top:1px solid var(--line)}
+section.first{border-top:0}
+.todo{background:var(--todo-bg); color:var(--todo-ink); border:1px dashed var(--todo-line); border-radius:6px; padding:10px 14px; font-size:.95rem; line-height:1.5}
+.todo b{font-family:var(--mono); font-weight:500; font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; margin-right:6px}
+span.todo{display:inline; padding:1px 6px}
+
+.top{padding-block:26px 0; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; font-size:.92rem; color:var(--muted)}
+.top strong{color:var(--ink)}
+.hero{padding-block:52px 44px; display:grid; gap:24px}
+.lede{font-size:1.22rem; color:var(--muted); max-width:660px}
+.meta{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:18px 28px; border-top:1px solid var(--line); padding-top:20px; margin:0}
+.meta dt{font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.meta dd{margin:4px 0 0; font-size:1rem}
+
+.shot{margin:0; display:flex; flex-direction:column; gap:10px; max-width:760px}
+.window{background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden; box-shadow:0 18px 44px rgba(10,30,50,.10)}
+.window .bar{display:flex; gap:6px; padding:9px 12px; border-bottom:1px solid var(--line)}
+.window .bar i{width:9px; height:9px; border-radius:50%; background:var(--line); display:block}
+.window img{display:block; width:100%; height:auto}
+.shot figcaption{font-size:.9rem; color:var(--muted)}
+.shot.narrow{max-width:420px}
+
+.split{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:44px; align-items:start}
+.split.wide-right{grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
+@media (max-width:640px){ .meta{grid-template-columns:1fr !important} }
+@media (max-width:840px){ .split,.split.wide-right{grid-template-columns:1fr; gap:28px} section{padding-block:52px} }
+
+.points{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:24px}
+.point h3{margin-bottom:6px}
+.point p{font-size:.98rem; color:var(--muted)}
+
+/* lifecycle */
+.flow{overflow-x:auto; padding-bottom:6px}
+.flow ol{list-style:none; margin:0; padding:0; display:flex; min-width:860px}
+.flow li{flex:1; position:relative; display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center}
+.flow li::before{content:""; position:absolute; top:15px; left:-50%; width:100%; border-top:2px dotted var(--line)}
+.flow li:first-child::before{display:none}
+.flow .dot{position:relative; z-index:1; width:32px; height:32px; border-radius:50%; display:grid; place-items:center; font-family:var(--mono); font-size:.72rem; background:var(--surface); border:2px solid var(--line); color:var(--muted)}
+.flow .done .dot{background:var(--done); border-color:var(--done); color:#fff}
+.flow .done::before{border-top:2px solid var(--done)}
+.flow .now .dot{background:var(--accent); border-color:var(--accent); color:#fff}
+.flow .name{font-family:var(--mono); font-size:.72rem; color:var(--muted); line-height:1.3}
+.flow .done .name{color:var(--done)} .flow .now .name{color:var(--accent); font-weight:500}
+.flow-note{font-size:.9rem; color:var(--muted); margin-top:14px}
+
+/* tab groups */
+.tabs{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px}
+.tabgroup{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px}
+.tabgroup h3{font-size:.95rem; margin-bottom:10px}
+.tabgroup ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.tabgroup li{font-family:var(--mono); font-size:.74rem; padding:4px 8px; border-radius:5px; background:var(--accent-soft); color:var(--accent)}
+
+.chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:4px}
+.chip{font-family:var(--mono); font-size:.74rem; padding:4px 9px; border-radius:999px; border:1px solid var(--line); color:var(--muted); background:var(--surface)}
+.chain{display:flex; flex-wrap:wrap; align-items:center; gap:8px}
+.chain .chip{color:var(--ink)}
+.chain .arr{color:var(--muted); font-family:var(--mono)}
+
+footer{border-top:1px solid var(--line); padding-block:36px 60px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:18px; font-size:.95rem; color:var(--muted)}
+footer strong{color:var(--ink)}
+.sel{user-select:all; font-family:var(--mono); font-size:.86rem; color:var(--ink)}
+.id{font-family:var(--mono); font-size:.92em}
+</style>
+<div class="wrap">
+  <div class="top"><span><strong>Rakesh Bhardwaj</strong> · Senior Product Designer</span><span>Case study · Enterprise web</span></div>
+
+  <header class="hero">
+    <p class="label">Service Maestro · Service orders and dispatch</p>
+    <h1>Every service job, from ticket to closed</h1>
+    <p class="lede" style="max-width:none">A web platform for companies that maintain heavy equipment at customer sites. I designed the service order workspace: the list dispatchers work from, the order record that holds a job's whole lifecycle, and the scheduler that puts the right technician and vehicle on it.</p>
+    <dl class="meta" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+      <div><dt>Role</dt><dd>Lead Associate II, UI/UX</dd></div>
+      <div><dt>Company</dt><dd>Agelix Consulting</dd></div>
+      <div><dt>Platform</dt><dd>Responsive web app</dd></div>
+      <div style="grid-column:1/-1"><dt>Scope</dt><dd>Stakeholder research with the project manager, competitive analysis of field service platforms, information architecture, UI for the order list, order record, dispatch scheduler and costing flows, prototypes, and developer handoff</dd></div>
+    </dl>
+  </header>
+
+  <figure class="shot">
+    <div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/sod.jpg" alt="Service order record for an excavator: lifecycle stepper, asset and job details, and the Task tab with assigned technicians" width="676" height="575"></div>
+    <figcaption>The service order record. The job summary stays pinned while fourteen tabs hold the work.</figcaption>
+  </figure>
+
+  <section class="first split">
+    <div class="stack prose" style="max-width:none">
+      <p class="label">The problem</p>
+      <h2>One job touches six teams</h2>
+      <p>A single service order for a crane or an HVAC unit involves a dispatcher, one or more technicians, a vehicle, parts from a warehouse, a safety procedure, and billing. Unless all of that lives in one place, the question "where is this job and what does it still need" has no single answer.</p>
+      <p>The goal was one workspace where a job is created, scheduled, worked, costed and closed without leaving the record.</p>
+    </div>
+    <div class="stack">
+      <p class="label">Who uses it</p>
+      <div class="points" style="grid-template-columns:1fr">
+        <div class="point"><h3>Dispatchers and service managers</h3><p>Triage incoming orders by priority and due date, assign technicians and vehicles, and follow each job to closure.</p></div>
+        <div class="point"><h3>Technicians</h3><p>Receive tasks, log labour, request parts and equipment, and update status from the field.</p></div>
+        <div class="point"><h3>Finance and admin</h3><p>Approve labour and expenses, and see what is billable versus covered by warranty.</p></div>
+      </div>
+    </div>
+    <div style="grid-column:1/-1; border:1px solid var(--line); background:var(--surface); border-radius:8px; padding:20px 24px; font-size:1.02rem; line-height:1.6; color:var(--ink)">
+      <p style="margin:0 0 10px"><strong>How I approached research.</strong> I worked through the problem with the project manager and business stakeholders, who represented dispatchers, service managers, technicians and finance. Those conversations kept coming back to three pain points:</p>
+      <ul style="margin:0 0 12px; padding-left:1.2em">
+        <li>A job's details were spread across teams, so nobody could say where it stood or what it still needed.</li>
+        <li>Clashes between a technician's schedule and vehicle availability only showed up after the job was assigned.</li>
+        <li>Labour and parts weren't recorded in enough detail, which led to billing disputes.</li>
+      </ul>
+      <p style="margin:0 0 10px">I also ran a competitive analysis of field service platforms: Salesforce Field Service, Microsoft Dynamics 365 Field Service, ServiceTitan, ServiceMax and IFS. In Salesforce and Dynamics 365, dispatchers schedule from a separate board, away from the work order. I kept scheduling inside the order instead, as the Assign Resource tab.</p>
+      <p style="margin:0">The result simplifies the whole process: one record where a job is created, scheduled, worked, costed and closed, with fewer screens to move between and fewer steps for the dispatcher.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">Triage</p>
+      <h2>A list built for scanning by urgency</h2>
+      <p>The order list shows what a dispatcher needs to decide what to do next: priority as a coloured tag, visit type (service or inspection), billable or not, location and due date. Every column carries its own filter. A full filter panel adds status, work order type, technician and category for bigger queues.</p>
+    </div>
+    <figure class="shot">
+      <div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/overview.jpg" alt="Service order list with ID, summary, priority tags, customer, location, visit type, billable type and due date columns, each filterable" width="599" height="263"></div>
+      <figcaption>Service order list with per-column filters and priority tags.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">Lifecycle</p>
+      <h2>Eleven states, always visible</h2>
+      <p>A job doesn't move in a straight line: it can be reopened after completion, and it passes a review before it closes. I mapped the full lifecycle and put it at the top of every order as a stepper, so anyone opening the record knows where it stands before they read a word.</p>
+    </div>
+    <div class="flow" role="img" aria-label="Service order lifecycle: New, Un-Assigned, Assigned, Open, Accepted, In Progress, Completed, Reopen, Updated, Reviewed, Closed. The example order is at Assigned.">
+      <ol>
+        <li class="done"><span class="dot">✓</span><span class="name">New</span></li>
+        <li class="done"><span class="dot">✓</span><span class="name">Un-Assigned</span></li>
+        <li class="now"><span class="dot">03</span><span class="name">Assigned</span></li>
+        <li><span class="dot">04</span><span class="name">Open</span></li>
+        <li><span class="dot">05</span><span class="name">Accepted</span></li>
+        <li><span class="dot">06</span><span class="name">In Progress</span></li>
+        <li><span class="dot">07</span><span class="name">Completed</span></li>
+        <li><span class="dot">08</span><span class="name">Reopen</span></li>
+        <li><span class="dot">09</span><span class="name">Updated</span></li>
+        <li><span class="dot">10</span><span class="name">Reviewed</span></li>
+        <li><span class="dot">11</span><span class="name">Closed</span></li>
+      </ol>
+    </div>
+    <p class="flow-note">Actions sit next to the stepper: Follow Up, View Feedback and Update Status.</p>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">Structure</p>
+      <h2>One record, fourteen tabs, four jobs to do</h2>
+      <p>The top half of the order never changes: the asset being serviced, the customer and site, visit type, work order type (for example predictive maintenance), priority, charge code and project. Everything that happens to the job lives in tabs underneath. Grouped by purpose, they cover four kinds of work.</p>
+    </div>
+    <div class="tabs">
+      <div class="tabgroup"><h3>Plan the work</h3><ul><li>Safety Procedure</li><li>Task</li><li>Maintenance Plan</li><li>Inspection</li></ul></div>
+      <div class="tabgroup"><h3>Resource it</h3><ul><li>Assign Resource</li><li>Equipment Transaction</li><li>Part Transaction</li><li>RMA</li></ul></div>
+      <div class="tabgroup"><h3>Cost it</h3><ul><li>Labor</li><li>Expense</li><li>Distance</li><li>Vendor</li></ul></div>
+      <div class="tabgroup"><h3>Record it</h3><ul><li>Attachment</li><li>Comments</li></ul></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">Dispatch</p>
+      <h2>People and vehicles on one timeline</h2>
+      <p>Assigning a job means matching a technician's time, skills and location with a free vehicle. The Assign Resource tab puts both on one day view, so the dispatcher can see conflicts instead of discovering them.</p>
+    </div>
+    <div class="split wide-right">
+      <div class="points" style="grid-template-columns:1fr">
+        <div class="point"><h3>Technicians and vehicles together</h3><p>Technicians, each with a rating, and vehicles such as a Ford Transit or a Mercedes Sprinter share the same hourly grid, filtered by city.</p></div>
+        <div class="point"><h3>Four states, colour-coded</h3><p>Slots show Not applicable, Out of office, Assigned or Allocated, so the dispatcher can see who is actually free at a glance.</p></div>
+        <div class="point"><h3>List, calendar or map</h3><p>The same assignment can be seen as a list, as the calendar, or on a map with the route from the technician's base to the site.</p></div>
+      </div>
+      <figure class="shot">
+        <div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/assign.jpg" alt="Assign Technician and Vehicle scheduler showing technicians with ratings and vehicles on an hourly grid with assigned and allocated slots" width="611" height="650"></div>
+        <figcaption>Scheduler view of Assign Resource.</figcaption>
+      </figure>
+    </div>
+    <figure class="shot" style="margin-top:32px">
+      <div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/map.jpg" alt="Map view of Assign Resource showing a route from the technician's site to the service address" width="613" height="536"></div>
+      <figcaption>Map view of the same assignment: base site to service address.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">Costing</p>
+      <h2>Every hour and part accounted for</h2>
+      <p>Billing disputes come from missing detail. Labour entries carry the labour type (standard, overtime, weekend, holiday), whether warranty covers them, and an approval status. Parts and equipment follow their own tracked chains inside the order.</p>
+    </div>
+    <figure class="shot">
+      <div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/labor.jpg" alt="Labor tab with technician, labour type, start and end times, warranty flag and approval status" width="562" height="230"></div>
+      <figcaption>Labor tab with warranty flags and approval states.</figcaption>
+    </figure>
+    <div class="points" style="margin-top:32px">
+      <div class="point"><h3>Labour approval</h3><div class="chips"><span class="chip">Requested</span><span class="chip">Approved</span><span class="chip">Declined</span><span class="chip">Billable</span></div></div>
+      <div class="point"><h3>Parts</h3><div class="chain"><span class="chip">Requested</span><span class="arr">→</span><span class="chip">Issued</span><span class="arr">→</span><span class="chip">Used</span><span class="arr">→</span><span class="chip">Returned to stock</span></div><p style="margin-top:8px">Part warranty is tracked alongside.</p></div>
+      <div class="point"><h3>Equipment</h3><div class="chain"><span class="chip">Request</span><span class="arr">→</span><span class="chip">Issued</span><span class="arr">→</span><span class="chip">Return</span></div><p style="margin-top:8px">Each request records its site and warehouse.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none">
+      <p class="label">Outcome</p>
+      <h2>What shipped and what I learned</h2>
+      <p>The design covers the order list and filters, the order record with its lifecycle and fourteen tabs, the dispatch scheduler and map, and the costing flows for labour, parts, equipment and expenses.</p>
+      <!-- <div class="todo"><b>Add</b>Status (in development, live, how many customers or orders), and one measurable change, for example time to assign a job or fewer billing corrections.</div> -->
+      <h3 style="margin-top:12px">What I learned: the summary matters more than the tab count</h3>
+      <p>Fourteen tabs sounds like a lot, but most visits to an order only need one answer: where the job stands and what it still needs. The pinned summary and the lifecycle stepper answer that before anyone opens a tab. That makes the tabs the place for doing work, not for finding things out, so their number matters less than whether people know which one to open.</p>
+      <p>Next, I'd simplify the tab bar itself. I'd group the fourteen tabs into the four purposes shown above (plan, resource, cost and record), and add small badges such as "Labor · 2 awaiting approval" so a dispatcher can see where action is needed without clicking through. I'd also hide tabs that don't apply to the visit type, such as Inspection on a standard service visit.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div><strong>Rakesh Bhardwaj</strong><br>Senior Product Designer · Gurugram, India<br><span class="sel">rakesh_bhardwaj@live.com</span></div>
+    <div><a href="../index.html">All case studies</a><br><a href="https://www.linkedin.com/in/rakesh-bhardwaj-b18b645b/">LinkedIn</a></div>
+  </footer>
+</div>
+
+</body></html>

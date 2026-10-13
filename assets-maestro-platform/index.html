@@ -1,0 +1,365 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Assets Maestro Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=JetBrains+Mono:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --ground:#F3F5F7; --surface:#FFFFFF; --ink:#111A24; --muted:#56626F; --line:#D8DEE4;
+  --accent:#0D5C8C; --accent-soft:#E1EEF6; --done:#2E8B57; --done-soft:#E3F2EA;
+  --todo-bg:#FFF6D6; --todo-line:#D9B64A; --todo-ink:#5E4A06;
+  --display:"Archivo", "Arial Narrow", system-ui, sans-serif;
+  --body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0F151C; --surface:#17202A; --ink:#E8EDF2; --muted:#9AA7B4; --line:#2A3642;
+    --accent:#5AA9DC; --accent-soft:#16324A; --done:#5CC08A; --done-soft:#173A29;
+    --todo-bg:#3A3212; --todo-line:#9C8430; --todo-ink:#F3E2A2;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0F151C; --surface:#17202A; --ink:#E8EDF2; --muted:#9AA7B4; --line:#2A3642;
+  --accent:#5AA9DC; --accent-soft:#16324A; --done:#5CC08A; --done-soft:#173A29;
+  --todo-bg:#3A3212; --todo-line:#9C8430; --todo-ink:#F3E2A2;
+}
+*{box-sizing:border-box}
+body{background:var(--ground); color:var(--ink); font-family:var(--body); font-size:18px; line-height:1.6; margin:0}
+.wrap{max-width:1040px; margin:0 auto; padding-inline:24px}
+.prose{max-width:680px}
+h1,h2,h3{font-family:var(--display); text-wrap:balance; margin:0; line-height:1.08}
+h1{font-size:clamp(2.4rem,6vw,4.2rem); font-weight:800; letter-spacing:-0.025em}
+h2{font-size:clamp(1.6rem,3.2vw,2.3rem); font-weight:700; letter-spacing:-0.015em}
+h3{font-size:1.1rem; font-weight:700}
+p{margin:0}
+a{color:var(--accent); text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+.label{font-family:var(--mono); font-size:.74rem; letter-spacing:.06em; text-transform:uppercase; color:var(--accent)}
+.stack{display:flex; flex-direction:column; gap:16px}
+section{padding-block:64px; border-top:1px solid var(--line)}
+section.first{border-top:0}
+.todo{background:var(--todo-bg); color:var(--todo-ink); border:1px dashed var(--todo-line); border-radius:6px; padding:10px 14px; font-size:.95rem; line-height:1.5}
+.todo b{font-family:var(--mono); font-weight:500; font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; margin-right:6px}
+span.todo{display:inline; padding:1px 6px}
+
+.top{padding-block:26px 0; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; font-size:.92rem; color:var(--muted)}
+.top strong{color:var(--ink)}
+.hero{padding-block:52px 44px; display:grid; gap:24px}
+.lede{font-size:1.22rem; color:var(--muted); max-width:660px}
+.meta{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:18px 28px; border-top:1px solid var(--line); padding-top:20px; margin:0}
+.meta dt{font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.meta dd{margin:4px 0 0; font-size:1rem}
+
+.shot{margin:0; display:flex; flex-direction:column; gap:10px; max-width:760px}
+.window{background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden; box-shadow:0 18px 44px rgba(10,30,50,.10)}
+.window .bar{display:flex; gap:6px; padding:9px 12px; border-bottom:1px solid var(--line)}
+.window .bar i{width:9px; height:9px; border-radius:50%; background:var(--line); display:block}
+.window img{display:block; width:100%; height:auto}
+.shot figcaption{font-size:.9rem; color:var(--muted)}
+.shot.narrow{max-width:420px}
+
+.split{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:44px; align-items:start}
+.split.wide-right{grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
+@media (max-width:840px){ .split,.split.wide-right{grid-template-columns:1fr; gap:28px} section{padding-block:52px} }
+
+.points{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:24px}
+.point h3{margin-bottom:6px}
+.point p{font-size:.98rem; color:var(--muted)}
+
+/* lifecycle */
+.flow{overflow-x:auto; padding-bottom:6px}
+.flow ol{list-style:none; margin:0; padding:0; display:flex; min-width:860px}
+.flow li{flex:1; position:relative; display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center}
+.flow li::before{content:""; position:absolute; top:15px; left:-50%; width:100%; border-top:2px dotted var(--line)}
+.flow li:first-child::before{display:none}
+.flow .dot{position:relative; z-index:1; width:32px; height:32px; border-radius:50%; display:grid; place-items:center; font-family:var(--mono); font-size:.72rem; background:var(--surface); border:2px solid var(--line); color:var(--muted)}
+.flow .done .dot{background:var(--done); border-color:var(--done); color:#fff}
+.flow .done::before{border-top:2px solid var(--done)}
+.flow .now .dot{background:var(--accent); border-color:var(--accent); color:#fff}
+.flow .name{font-family:var(--mono); font-size:.72rem; color:var(--muted); line-height:1.3}
+.flow .done .name{color:var(--done)} .flow .now .name{color:var(--accent); font-weight:500}
+.flow-note{font-size:.9rem; color:var(--muted); margin-top:14px}
+
+/* tab groups */
+.tabs{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px}
+.tabgroup{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px}
+.tabgroup h3{font-size:.95rem; margin-bottom:10px}
+.tabgroup ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.tabgroup li{font-family:var(--mono); font-size:.74rem; padding:4px 8px; border-radius:5px; background:var(--accent-soft); color:var(--accent)}
+
+.chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:4px}
+.chip{font-family:var(--mono); font-size:.74rem; padding:4px 9px; border-radius:999px; border:1px solid var(--line); color:var(--muted); background:var(--surface)}
+.chain{display:flex; flex-wrap:wrap; align-items:center; gap:8px}
+.chain .chip{color:var(--ink)}
+.chain .arr{color:var(--muted); font-family:var(--mono)}
+
+footer{border-top:1px solid var(--line); padding-block:36px 60px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:18px; font-size:.95rem; color:var(--muted)}
+footer strong{color:var(--ink)}
+.sel{user-select:all; font-family:var(--mono); font-size:.86rem; color:var(--ink)}
+.id{font-family:var(--mono); font-size:.92em}
+</style>
+<style>
+.cards6{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px}
+.pcard{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:18px}
+.pcard h3{margin-bottom:6px}
+.pcard p{font-size:.96rem; color:var(--muted)}
+.steps{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px; counter-reset:s}
+.steps li{counter-increment:s; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px}
+.steps li::before{content:counter(s,decimal-leading-zero); font-family:var(--mono); font-size:.75rem; color:var(--accent); display:block; margin-bottom:6px}
+.steps h3{font-size:1rem; margin-bottom:4px}
+.steps p{font-size:.92rem; color:var(--muted)}
+.pair{display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:620px}
+@media (max-width:560px){ .pair{grid-template-columns:1fr} }
+.impact{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px}
+.impact .pcard strong{display:block; font-family:var(--display); font-size:1.6rem; color:var(--accent); line-height:1.1; margin-bottom:6px}
+.related{display:flex; flex-wrap:wrap; gap:12px}
+.related a{border:1px solid var(--line); background:var(--surface); border-radius:8px; padding:10px 14px; text-decoration:none; font-weight:600}
+.related a:hover{border-color:var(--accent)}
+.cmp-scroll{overflow-x:auto}
+.cmp{width:100%; min-width:620px; border-collapse:collapse; background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden; font-size:.95rem}
+.cmp th,.cmp td{text-align:left; vertical-align:top; padding:12px 14px; border-bottom:1px solid var(--line)}
+.cmp thead th{font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); background:var(--ground)}
+.cmp tbody th{font-family:var(--display); font-weight:700; white-space:nowrap}
+.cmp tbody td:last-child{color:var(--accent)}
+.cmp tr:last-child th,.cmp tr:last-child td{border-bottom:0}
+.cmp-note{font-size:.85rem; color:var(--muted); margin-top:10px}
+</style>
+<div class="wrap">
+  <div class="top"><span><strong>Rakesh Bhardwaj</strong> · Senior Product Designer</span><span>Case study · Enterprise SaaS</span></div>
+
+  <header class="hero">
+    <p class="label">Assets Maestro · Admin platform · Dec 2024 – Dec 2025</p>
+    <h1>One front door for every portal</h1>
+    <p class="lede" style="max-width:none">Assets Maestro is an AI and IoT-powered SaaS platform for field service and asset monitoring. It connects manufacturers, service providers and customers through separate Service, Customer, Contract and Asset Monitoring portals. I designed the layer that holds them together: tenant management, a unified admin hub, secure sign-in, permissions, integrations and the design system behind it all.</p>
+    <dl class="meta">
+      <div><dt>Role</dt><dd>UX/UI Designer (Lead Associate II)</dd></div>
+      <div><dt>Company</dt><dd>Agelix Consulting</dd></div>
+      <div><dt>Platform</dt><dd>Responsive web, with mobile views</dd></div>
+      <div><dt>Tools</dt><dd>Figma, Photoshop</dd></div>
+    </dl>
+  </header>
+
+  <figure class="shot">
+    <div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/hero.jpg" alt="Assets Maestro operational dashboard on laptop and phone, showing order totals, service providers, most-serviced assets and urgent in-service assets" width="465" height="285"></div>
+    <figcaption>The operational dashboard on desktop and mobile.</figcaption>
+  </figure>
+
+  <section class="first">
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">The problem</p>
+      <h2>Portals that were never built to work together</h2>
+      <p>The service, contract and vendor tools had been built separately, so users jumped between websites and logins to manage a single asset. Managers couldn't see the whole business, and data moved between systems by hand.</p>
+    </div>
+    <div class="cards6">
+      <div class="pcard"><h3>Scattered information</h3><p>Users moved between portals and tools to manage one asset.</p></div>
+      <div class="pcard"><h3>Login fatigue</h3><p>Every sub-portal had its own credentials and no shared security.</p></div>
+      <div class="pcard"><h3>No big picture</h3><p>Data sat in separate modules, so managers couldn't see overall performance.</p></div>
+      <div class="pcard"><h3>Manual errors</h3><p>Data was copied by hand between systems like Salesforce and Oracle, causing frequent mistakes.</p></div>
+      <div class="pcard"><h3>Disjointed portals</h3><p>Service, contract and vendor tools were separate websites with different patterns.</p></div>
+      <div class="pcard"><h3>Integration delays</h3><p>Third-party connections broke data sync and slowed the whole system.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">What I owned</p>
+      <h2>From stakeholder alignment to the design system</h2>
+    </div>
+    <div class="points">
+      <div class="point"><h3>Umbrella architecture</h3><p>A central admin hub that brings the Customer, Service, Contract and Vendor portals into one workspace.</p></div>
+      <div class="point"><h3>Access control</h3><p>A permission matrix that lets admins grant View, Add, Edit and Delete rights by role.</p></div>
+      <div class="point"><h3>System configuration</h3><p>Organisation-wide settings for branding, date and time formats, and integrations.</p></div>
+      <div class="point"><h3>Custom reporting</h3><p>A report designer that guides users through choosing data sources and filters in seven steps.</p></div>
+      <div class="point"><h3>Stakeholder alignment</h3><p>Working with cross-functional teams to define requirements across every portal.</p></div>
+      <div class="point"><h3>Usability testing</h3><p>Testing designs and iterating on what users found hard.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">Process</p>
+      <h2>Five steps, from problem to tested design</h2>
+    </div>
+    <ol class="steps">
+      <li><h3>Understand</h3><p>Defined business goals and constraints with stakeholders.</p></li>
+      <li><h3>Research</h3><p>Compared Asset Panda, UpKeep and IBM Maximo, and gathered insights.</p></li>
+      <li><h3>Define and ideate</h3><p>Brainstormed solutions with cross-functional teams.</p></li>
+      <li><h3>Design and prototype</h3><p>High-fidelity designs and prototypes in Figma.</p></li>
+      <li><h3>Test and iterate</h3><p>Usability testing, then refinements based on feedback.</p></li>
+    </ol>
+    <div class="stack prose" style="max-width:none; margin-top:40px; margin-bottom:20px">
+      <h3>What the competitor analysis showed</h3>
+      <p>Users of the leading tools complain about the same few things. Each one shaped a decision in Assets Maestro.</p>
+    </div>
+    <div class="cmp-scroll">
+      <table class="cmp">
+        <thead><tr><th scope="col">Tool</th><th scope="col">What users report</th><th scope="col">What I designed instead</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">IBM Maximo</th><td>Complexity is the most common complaint: a steep learning curve and an interface reviewers call "clunky". One team wrote a 45-page quick-start guide.</td><td>A single hub where each portal is a labelled card with a one-line purpose, and one design system so every portal works the same way.</td></tr>
+          <tr><th scope="row">IBM Maximo</th><td>Custom integrations are expensive to build and maintain.</td><td>Ready-made ERP and CRM connectors (Salesforce, Microsoft Dynamics, Oracle) that connect from settings in one step.</td></tr>
+          <tr><th scope="row">UpKeep</th><td>A "lack of custom security options".</td><td>A two-layer permission matrix: custom roles with portal access and action rights set separately.</td></tr>
+          <tr><th scope="row">UpKeep, Asset Panda</th><td>Reports are hard to build. Asset Panda reviewers call them "complicated".</td><td>A report designer that guides users through data sources and filters in seven steps.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cmp-note">Complaints are drawn from public reviews on G2, Capterra and SelectHub (2025–2026).</p>
+    <div style="margin-top:24px; border:1px solid var(--line); background:var(--surface); border-radius:8px; padding:18px 22px; font-size:1.02rem; line-height:1.6; color:var(--ink)"><strong>How I approached research.</strong> The research combined two things: a competitive analysis of asset-management tools, IBM Maximo, UpKeep and Asset Panda, drawn from their public user reviews, and working assumptions about the people who would run the platform. The analysis showed where those tools frustrate users: complexity, costly integrations, rigid security and hard-to-build reports. The assumptions covered how admins and service managers work: juggling several portals, setting different access for each role, connecting existing ERP and CRM systems, and onboarding partners without IT help. Together they shaped the decisions on this page, and the next round would validate them with admins at a customer site.</div>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">Architecture</p>
+      <h2>A root portal, four roles, one login</h2>
+      <p>Agelix configures each customer company (a tenant) from a root portal. Everyone signs in through one screen with two-factor verification by email or phone. Admins, coordinators, technicians and service-desk staff then land on a dashboard and reach only the portals their role allows: Admin, Asset Registry, Customer, Service and Contract.</p>
+    </div>
+    <figure class="shot">
+      <div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/ia.jpg" alt="Information architecture of Assets Maestro: root portal configuration, login types, and the Admin, Asset Registry, Service and Customer portals with their modules" width="634" height="340"></div>
+      <figcaption>Information architecture across the portals.</figcaption>
+    </figure>
+    <figure class="shot" style="margin-top:28px">
+      <div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/flow.jpg" alt="Basic flow: root portal configuration, login with 2FA by email or phone OTP, and role-based access to each portal" width="582" height="372"></div>
+      <figcaption>Basic flow: configuration, sign-in with 2FA, and role-based access.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">Security</p>
+      <h2>One secure sign-in for the whole platform</h2>
+      <p>A single multi-factor sign-in replaced the separate logins. After the password, users verify with a six-digit code sent to their email or phone.</p>
+    </div>
+    <div class="pair">
+      <figure class="shot"><div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/signin.jpg" alt="Sign-in screen with user ID and password" width="249" height="308"></div><figcaption>Sign in</figcaption></figure>
+      <figure class="shot"><div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/mfa.jpg" alt="Multi-factor verification screen with six-digit code entry, by email or phone" width="248" height="308"></div><figcaption>Six-digit verification</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="split wide-right">
+      <div class="stack prose" style="max-width:none">
+        <p class="label">Root portal</p>
+        <h2>Managing every customer company in one place</h2>
+        <p>Agelix runs the platform for many companies. The root portal shows tenants with their status and type (service provider or customer), and each tenant's page holds general details, contacts, admin info and subscription limits such as plan, user limit and asset limit.</p>
+      </div>
+      <figure class="shot"><div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/tenant.jpg" alt="Root portal tenant page for Acme Corporation with general info, contacts and subscription details" width="492" height="309"></div><figcaption>A tenant's overview in the root portal.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">Partner onboarding</p>
+      <h2>Inviting a company instead of creating its users</h2>
+      <p>Service providers bring their customers and partners onto the platform by invitation. From Partner Management they add the company, its service type and a primary contact, with an optional secondary contact, and send an invite. The invited contact gets a registration page with the company and email already filled in, so they only choose a user ID and password.</p>
+    </div>
+    <figure class="shot">
+      <div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/invite.jpg" alt="Partner Management with the Add Partner drawer: partner name, service type, primary and secondary contact, and Send Invite" width="720" height="405"></div>
+      <figcaption>Step 1: the service provider invites a partner.</figcaption>
+    </figure>
+    <figure class="shot" style="margin-top:28px">
+      <div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/register.jpg" alt="Partner Registration page with company and email prefilled, user ID, password and confirm password" width="720" height="417"></div>
+      <figcaption>Step 2: the partner registers with company and email already filled in.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="split wide-right">
+      <div class="stack prose" style="max-width:none">
+        <p class="label">Unified admin hub</p>
+        <h2>Pick a vertical, not a website</h2>
+        <p>After sign-in, users choose where to work from one hub: Asset Registry, Customer, Service, Vendor, Admin and Contract portals, plus Reports and User Management. Each card says what the portal is for, so new staff don't need to know the system's history to find their way.</p>
+      </div>
+      <figure class="shot"><div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/hub.jpg" alt="Unified admin hub with cards for Asset Registry, Customer Portal, Service Portal, Vendor Portal, Admin Portal, Contract Portal, Reports and User Management" width="492" height="310"></div><figcaption>The hub that replaced separate websites.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">Integrations</p>
+      <h2>Connecting ERP and CRM without copying data by hand</h2>
+      <p>Settings group integrations by type: ERP (Microsoft Dynamics 365, Oracle Fusion Cloud ERP, Infor CloudSuite) and CRM (Salesforce, Microsoft Dynamics 365 Sales, HubSpot). Each connects in one step, with a clear connecting state, so admins know what's syncing.</p>
+    </div>
+    <div class="split">
+      <figure class="shot"><div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/integration.jpg" alt="Integration settings listing ERP and CRM systems with Connect buttons" width="498" height="315"></div><figcaption>ERP and CRM integrations in settings.</figcaption></figure>
+      <figure class="shot"><div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/connect.jpg" alt="Modal showing Salesforce connecting to Assets Maestro" width="498" height="310"></div><figcaption>Connecting Salesforce.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">People and permissions</p>
+      <h2>Users, roles and skills in one table</h2>
+      <p>User management lists everyone with department, role and location, filterable by department and role. Adding a user captures company, reporting manager, resource group and skills. Access is set through a permission matrix of View, Add, Edit and Delete rights per role.</p>
+    </div>
+    <div class="split">
+      <figure class="shot"><div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/users.jpg" alt="User management table with user, email, department, role and location" width="498" height="227"></div><figcaption>User management.</figcaption></figure>
+      <figure class="shot"><div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/adduser.jpg" alt="Add New User form with role, company, user ID, department, resource group, reporting manager, location and skills" width="500" height="312"></div><figcaption>Adding a user, including skills.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">Permission matrix</p>
+      <h2>Two questions for every role: where, and what</h2>
+      <p>Permissions work in two layers. The first decides <em>where</em> a role can go: which portals it can open, such as Asset Registry, Customer, Service, Contract and Vendor. The second decides <em>what</em> it can do there: View, Add, Edit, Delete or Manage Roles. Keeping the layers separate means an admin can give a coordinator the Customer Portal without also giving them the right to delete records.</p>
+    </div>
+    <figure class="shot">
+      <div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/roles_actions.jpg" alt="Roles and Permission tab listing Admin, Coordinator, Service Desk, Manager and Analyst with their action rights and user counts" width="720" height="405"></div>
+      <figcaption>Each role's action rights at a glance: Admin has everything, Service Desk can only view.</figcaption>
+    </figure>
+    <figure class="shot" style="margin-top:28px">
+      <div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/roles_portal.jpg" alt="Roles and Permission tab showing which portals each role can access" width="720" height="405"></div>
+      <figcaption>The same roles by portal access.</figcaption>
+    </figure>
+    <div class="pair" style="margin-top:28px">
+      <figure class="shot"><div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/drawer_portals.jpg" alt="Add Role and Permission drawer with a toggle per portal" width="287" height="405"></div><figcaption>Creating a role: portal access.</figcaption></figure>
+      <figure class="shot"><div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/drawer_actions.jpg" alt="Add Role drawer with View, Add, Edit, Delete, Manage Roles and System Admin rights" width="287" height="405"></div><figcaption>Creating a role: action rights.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">Design system</p>
+      <h2>One visual language across every portal</h2>
+      <p>To make separate portals feel like one product, I built a shared foundation: a colour palette, a five-step type scale from 30 px headings to 14 px small text, a 12-column grid with a 16 px gap, a 4–48 px spacing scale, an icon set, and components for inputs, buttons, cards, navigation, toggles and dashboard stats.</p>
+    </div>
+    <figure class="shot"><div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/ds.jpg" alt="Design system foundations: colours, typography scale, grid, icons, spacing, form inputs, buttons, cards, navigation, toggles and dashboard patterns" width="772" height="662"></div><figcaption>Foundations and core components.</figcaption></figure>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">Impact</p>
+      <h2>Launched to production and adopted by global enterprises</h2>
+    </div>
+    <div class="impact">
+      <div class="pcard"><strong>v9.0.0</strong><p>Taken from design to a full production release.</p></div>
+      <div class="pcard"><strong>1,200+</strong><p>Active users, managing thousands of assets in one system.</p></div>
+      <div class="pcard"><strong>Red Bull, Air India</strong><p>Among the enterprise customers that subscribed.</p></div>
+      <div class="pcard"><strong>1 login</strong><p>A single MFA sign-in with role-based permissions replaced separate portal logins.</p></div>
+    </div>
+    <div class="points" style="margin-top:28px">
+      <div class="point"><h3>Automated sync</h3><p>Real-time syncing with Salesforce, Oracle and Microsoft Dynamics replaced manual data entry.</p></div>
+      <div class="point"><h3>Live insights</h3><p>Managers see operational efficiency and customer satisfaction on live dashboards.</p></div>
+      <div class="point"><h3>Lifecycle in one place</h3><p>Asset and contract management now run end to end in one platform.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:20px">
+      <p class="label">Related work</p>
+      <h2>Inside the Service Portal</h2>
+      <p>Two more case studies go deeper into the Service Portal of this platform.</p>
+    </div>
+    <div class="related">
+      <a href="../service-maestro-dispatch/index.html">Service orders and dispatch →</a>
+      <a href="../service-maestro-assets/index.html">Asset records and BOM →</a>
+    </div>
+  </section>
+
+  <footer>
+    <div><strong>Rakesh Bhardwaj</strong><br>Senior Product Designer · Gurugram, India<br><span class="sel">rakesh_bhardwaj@live.com</span></div>
+    <div><a href="../index.html">All case studies</a><br><a href="https://www.linkedin.com/in/rakesh-bhardwaj-b18b645b/">LinkedIn</a></div>
+  </footer>
+</div>
+
+</body></html>

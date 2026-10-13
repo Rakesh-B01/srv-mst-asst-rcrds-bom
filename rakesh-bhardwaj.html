@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Rakesh Bhardwaj Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=JetBrains+Mono:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
 <style>
@@ -93,14 +93,16 @@ span.todo{display:inline; padding:1px 6px}
 .chain{display:flex; flex-wrap:wrap; align-items:center; gap:8px}
 .chain .chip{color:var(--ink)}
 .chain .arr{color:var(--muted); font-family:var(--mono)}
-
 footer{border-top:1px solid var(--line); padding-block:36px 60px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:18px; font-size:.95rem; color:var(--muted)}
 footer strong{color:var(--ink)}
 .sel{user-select:all; font-family:var(--mono); font-size:.86rem; color:var(--ink)}
 .id{font-family:var(--mono); font-size:.92em}
 </style>
 <style>
-.hub-hero{padding-block:64px 40px; display:grid; gap:22px}
+.hub-hero{padding-block:64px 40px; display:grid; grid-template-columns:minmax(0,1fr) clamp(200px,26vw,280px); gap:40px; align-items:center}
+.hero-text{display:grid; gap:22px; min-width:0}
+.hero-photo{width:100%; height:auto; aspect-ratio:4/5; object-fit:cover; border-radius:16px; border:1px solid var(--line); background:var(--surface); display:block}
+@media (max-width:720px){ .hub-hero{grid-template-columns:1fr; gap:24px} .hero-photo{width:160px; order:-1} }
 .cards{display:grid; gap:28px; padding-bottom:56px}
 .card{display:grid; grid-template-columns:minmax(0,5fr) minmax(0,6fr); gap:28px; align-items:center; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:24px; text-decoration:none; color:inherit; transition:border-color .2s}
 .card:hover{border-color:var(--accent)}
@@ -147,28 +149,33 @@ footer strong{color:var(--ink)}
 <div class="wrap">
   <nav class="nav" aria-label="Page sections"><a href="#work">Case studies</a><a href="#resume">Resume</a></nav>
   <header class="hub-hero">
+    <div class="hero-text">
     <p class="label">Portfolio</p>
     <h1>Rakesh Bhardwaj</h1>
-    <p class="lede">Senior Product Designer with 16+ years designing enterprise, government and B2B SaaS products for web and mobile. I work best on complex, rule-heavy systems: field service, asset management, tax compliance, and operations tools that people use all day.</p>
+    <p class="lede" style="max-width:none">Senior Product Designer with 16+ years designing enterprise, government and B2B SaaS products for web and mobile. I work best on complex, rule-heavy systems: field service, asset management, tax compliance, and operations tools that people use all day.</p>
     <div class="actions"><button class="btn" type="button" data-dl="pdf">Download resume (PDF)</button><a class="btn ghost" href="#resume" style="text-decoration:none">View resume</a></div>
+    </div>
+    <img class="hero-photo" src="img/rakesh.jpg" alt="Portrait of Rakesh Bhardwaj" width="560" height="700">
   </header>
 
   <div class="cards" id="work">
-    <a class="card" href="https://claude.ai/artifact/Fhs68tMSMfjjBTtfoSLzic">
-      <div class="thumb"><img src="img/dispatch.jpg" alt="" width="611" height="650"></div>
-      <div class="stack"><p class="label">Service Maestro · Enterprise web</p><h2>Every service job, from ticket to closed</h2><p>The service order workspace for a field service platform: an 11-state lifecycle, a record with fourteen tabs, and a scheduler that puts technicians and vehicles on one timeline.</p><span class="go">Read case study →</span></div>
+    <a class="card" href="assets-maestro-platform/index.html">
+      <div class="thumb"><img src="img/assetsmaestro.jpg" alt="" width="465" height="285"></div>
+      <div class="stack"><p class="label">Assets Maestro · Enterprise SaaS</p><h2>One front door for every portal</h2><p>The admin platform that unified separate service, customer, contract and vendor portals, with secure sign-in, permissions, ERP and CRM integrations and a shared design system. Launched as v9.0.0 with 1,200+ active users.</p><span class="go">Read case study →</span></div>
     </a>
-    <a class="card" href="https://claude.ai/artifact/TQJ4YaTs1PH68jvXxcgJnB">
-      <div class="thumb"><img src="img/assets.jpg" alt="" width="521" height="301"></div>
-      <div class="stack"><p class="label">Service Maestro · Enterprise web</p><h2>Every machine keeps its own history</h2><p>Asset records for heavy equipment, with location tracking and a BOM viewer that turns an exploded diagram into a parts request.</p><span class="go">Read case study →</span></div>
-    </a>
-    <a class="card" href="https://claude.ai/artifact/PzUti3EuUPYJWozYUnqwML">
+        <a class="card" href="gaushala-app-case-study/index.html">
       <div class="thumb phone"><img src="img/gaushala.jpg" alt="" width="166" height="374"></div>
       <div class="stack"><p class="label">Gaushala App · Android + admin web</p><h2>Knowing every cow by her nose</h2><p>Herd management for a cow shelter, with AI muzzle recognition, health and milk records, and reports.</p><span class="go">Read case study →</span></div>
     </a>
+    <a class="card" href="service-maestro-assets/index.html">
+      <div class="thumb"><img src="img/dispatch.jpg" alt="" width="611" height="650"></div>
+      <div class="stack"><p class="label">Service Maestro · Enterprise web</p><h2>Every service job, from ticket to closed</h2><p>The service order workspace for a field service platform: an 11-state lifecycle, a record with fourteen tabs, and a scheduler that puts technicians and vehicles on one timeline.</p><span class="go">Read case study →</span></div>
+    </a>
+    <a class="card" href="service-maestro-assets/index.html">
+      <div class="thumb"><img src="img/assets.jpg" alt="" width="521" height="301"></div>
+      <div class="stack"><p class="label">Service Maestro · Enterprise web</p><h2>Every machine keeps its own history</h2><p>Asset records for heavy equipment, with location tracking and a BOM viewer that turns an exploded diagram into a parts request.</p><span class="go">Read case study →</span></div>
+    </a>
   </div>
-
-
   <section class="resume" id="resume">
     <div class="resume-head">
       <div class="stack"><p class="label">Resume</p><h2>16+ years of product and UX design</h2></div>
@@ -197,7 +204,6 @@ footer strong{color:var(--ink)}
       </aside>
     </div>
   </section>
-
   <section>
     <p class="label" style="margin-bottom:18px">Earlier work</p>
     <div class="earlier">
@@ -207,13 +213,11 @@ footer strong{color:var(--ink)}
       <div><h3>FranConnect</h3><p>Websites for UPS, Nestlé and Gold's Gym on a platform serving 75,000+ users.</p></div>
     </div>
   </section>
-
   <footer>
     <div><strong>Rakesh Bhardwaj</strong><br>Gurugram, India<br><span class="sel">rakesh_bhardwaj@live.com</span> · <span class="sel">+91-9650061505</span></div>
-    <div><a href="https://www.linkedin.com/in/rakesh-bhardwaj-b18b645b/">LinkedIn</a></div>
+    <div><a href="https://www.linkedin.com/in/rakesh-bhardwaj-b18b645b/" target="_blank">LinkedIn</a></div>
   </footer>
 </div>
-
 <script>
 (function(){
   var FILES={pdf:"resume/Rakesh_Bhardwaj_Senior_Product_Designer.pdf", docx:"resume/Rakesh_Bhardwaj_Senior_Product_Designer.docx"};

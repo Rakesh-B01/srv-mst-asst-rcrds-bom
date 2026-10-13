@@ -1,0 +1,214 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Service Maestro Assets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=JetBrains+Mono:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --ground:#F3F5F7; --surface:#FFFFFF; --ink:#111A24; --muted:#56626F; --line:#D8DEE4;
+  --accent:#0D5C8C; --accent-soft:#E1EEF6; --done:#2E8B57; --done-soft:#E3F2EA;
+  --todo-bg:#FFF6D6; --todo-line:#D9B64A; --todo-ink:#5E4A06;
+  --display:"Archivo", "Arial Narrow", system-ui, sans-serif;
+  --body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0F151C; --surface:#17202A; --ink:#E8EDF2; --muted:#9AA7B4; --line:#2A3642;
+    --accent:#5AA9DC; --accent-soft:#16324A; --done:#5CC08A; --done-soft:#173A29;
+    --todo-bg:#3A3212; --todo-line:#9C8430; --todo-ink:#F3E2A2;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0F151C; --surface:#17202A; --ink:#E8EDF2; --muted:#9AA7B4; --line:#2A3642;
+  --accent:#5AA9DC; --accent-soft:#16324A; --done:#5CC08A; --done-soft:#173A29;
+  --todo-bg:#3A3212; --todo-line:#9C8430; --todo-ink:#F3E2A2;
+}
+*{box-sizing:border-box}
+body{background:var(--ground); color:var(--ink); font-family:var(--body); font-size:18px; line-height:1.6; margin:0}
+.wrap{max-width:1040px; margin:0 auto; padding-inline:24px}
+.prose{max-width:680px}
+h1,h2,h3{font-family:var(--display); text-wrap:balance; margin:0; line-height:1.08}
+h1{font-size:clamp(2.4rem,6vw,4.2rem); font-weight:800; letter-spacing:-0.025em}
+h2{font-size:clamp(1.6rem,3.2vw,2.3rem); font-weight:700; letter-spacing:-0.015em}
+h3{font-size:1.1rem; font-weight:700}
+p{margin:0}
+a{color:var(--accent); text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+.label{font-family:var(--mono); font-size:.74rem; letter-spacing:.06em; text-transform:uppercase; color:var(--accent)}
+.stack{display:flex; flex-direction:column; gap:16px}
+section{padding-block:64px; border-top:1px solid var(--line)}
+section.first{border-top:0}
+.todo{background:var(--todo-bg); color:var(--todo-ink); border:1px dashed var(--todo-line); border-radius:6px; padding:10px 14px; font-size:.95rem; line-height:1.5}
+.todo b{font-family:var(--mono); font-weight:500; font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; margin-right:6px}
+span.todo{display:inline; padding:1px 6px}
+
+.top{padding-block:26px 0; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; font-size:.92rem; color:var(--muted)}
+.top strong{color:var(--ink)}
+.hero{padding-block:52px 44px; display:grid; gap:24px}
+.lede{font-size:1.22rem; color:var(--muted); max-width:660px}
+.meta{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:18px 28px; border-top:1px solid var(--line); padding-top:20px; margin:0}
+.meta dt{font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.meta dd{margin:4px 0 0; font-size:1rem}
+
+.shot{margin:0; display:flex; flex-direction:column; gap:10px; max-width:760px}
+.window{background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden; box-shadow:0 18px 44px rgba(10,30,50,.10)}
+.window .bar{display:flex; gap:6px; padding:9px 12px; border-bottom:1px solid var(--line)}
+.window .bar i{width:9px; height:9px; border-radius:50%; background:var(--line); display:block}
+.window img{display:block; width:100%; height:auto}
+.shot figcaption{font-size:.9rem; color:var(--muted)}
+.shot.narrow{max-width:420px}
+
+.split{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:44px; align-items:start}
+.split.wide-right{grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
+@media (max-width:640px){ .meta{grid-template-columns:1fr !important} }
+@media (max-width:840px){ .split,.split.wide-right{grid-template-columns:1fr; gap:28px} section{padding-block:52px} }
+
+.points{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:24px}
+.point h3{margin-bottom:6px}
+.point p{font-size:.98rem; color:var(--muted)}
+
+/* lifecycle */
+.flow{overflow-x:auto; padding-bottom:6px}
+.flow ol{list-style:none; margin:0; padding:0; display:flex; min-width:860px}
+.flow li{flex:1; position:relative; display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center}
+.flow li::before{content:""; position:absolute; top:15px; left:-50%; width:100%; border-top:2px dotted var(--line)}
+.flow li:first-child::before{display:none}
+.flow .dot{position:relative; z-index:1; width:32px; height:32px; border-radius:50%; display:grid; place-items:center; font-family:var(--mono); font-size:.72rem; background:var(--surface); border:2px solid var(--line); color:var(--muted)}
+.flow .done .dot{background:var(--done); border-color:var(--done); color:#fff}
+.flow .done::before{border-top:2px solid var(--done)}
+.flow .now .dot{background:var(--accent); border-color:var(--accent); color:#fff}
+.flow .name{font-family:var(--mono); font-size:.72rem; color:var(--muted); line-height:1.3}
+.flow .done .name{color:var(--done)} .flow .now .name{color:var(--accent); font-weight:500}
+.flow-note{font-size:.9rem; color:var(--muted); margin-top:14px}
+
+/* tab groups */
+.tabs{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px}
+.tabgroup{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px}
+.tabgroup h3{font-size:.95rem; margin-bottom:10px}
+.tabgroup ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.tabgroup li{font-family:var(--mono); font-size:.74rem; padding:4px 8px; border-radius:5px; background:var(--accent-soft); color:var(--accent)}
+
+.chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:4px}
+.chip{font-family:var(--mono); font-size:.74rem; padding:4px 9px; border-radius:999px; border:1px solid var(--line); color:var(--muted); background:var(--surface)}
+.chain{display:flex; flex-wrap:wrap; align-items:center; gap:8px}
+.chain .chip{color:var(--ink)}
+.chain .arr{color:var(--muted); font-family:var(--mono)}
+
+footer{border-top:1px solid var(--line); padding-block:36px 60px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:18px; font-size:.95rem; color:var(--muted)}
+footer strong{color:var(--ink)}
+.sel{user-select:all; font-family:var(--mono); font-size:.86rem; color:var(--ink)}
+.id{font-family:var(--mono); font-size:.92em}
+</style>
+<div class="wrap">
+  <div class="top"><span><strong>Rakesh Bhardwaj</strong> · Senior Product Designer</span><span>Case study · Enterprise web</span></div>
+
+  <header class="hero">
+    <p class="label">Service Maestro · Asset records, BOM and parts</p>
+    <h1>Every machine keeps its own history</h1>
+    <p class="lede" style="max-width:none">Service companies maintain cranes, excavators and HVAC plant for their customers. I designed the asset record: one page per machine that holds its service orders, contracts, manuals, location history and a clickable bill of materials that turns a diagram into a parts request.</p>
+    <dl class="meta" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+      <div><dt>Role</dt><dd>Lead Associate II, UI/UX</dd></div>
+      <div><dt>Company</dt><dd>Agelix Consulting</dd></div>
+      <div><dt>Platform</dt><dd>Responsive web app</dd></div>
+      <div style="grid-column:1/-1"><dt>Scope</dt><dd>Stakeholder research with the project manager, competitive analysis, information architecture, UI for the asset record, tracking, BOM viewer and parts request flow, prototypes, and developer handoff</dd></div>
+    </dl>
+  </header>
+
+  <figure class="shot">
+    <div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/asset.jpg" alt="Asset record for a crane with make, model, category, location, dates and customer, and an Order History tab listing its service orders" width="593" height="367"></div>
+    <figcaption>The asset record. Identity and status on top, the machine's whole life in nine tabs below.</figcaption>
+  </figure>
+
+  <section class="first split">
+    <div class="stack prose">
+      <p class="label">The problem</p>
+      <h2>The machine is the thing everyone asks about</h2>
+      <p>When a crane breaks down, the questions are always about that machine. When was it last serviced? Is it under contract or warranty? Where is it now? Which part failed, and is one in stock? If the answers are spread across service tickets, contract files, manuals and inventory, every call means a search.</p>
+      <p>The asset record puts those answers on one page, so it can be the starting point for new work.</p>
+    </div>
+    <div class="stack">
+      <p class="label">What one asset holds</p>
+      <div class="tabgroup">
+        <h3>Identity</h3>
+        <ul><li>Asset name</li><li>Make</li><li>Model</li><li>Category</li><li>Serial no.</li><li>Status: Up</li></ul>
+      </div>
+      <div class="tabgroup">
+        <h3>Ownership and dates</h3>
+        <ul><li>Customer</li><li>Location</li><li>Purchase / lease date</li><li>Start / end date</li><li>Last maintained</li></ul>
+      </div>
+      <div class="tabgroup">
+        <h3>Tabs</h3>
+        <ul><li>Order History</li><li>Contract</li><li>User Manual</li><li>Tracking</li><li>BOM</li><li>Maintenance</li><li>Inspection</li><li>Safety</li><li>Monitor &amp; Control</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">Service history</p>
+      <h2>Start new work from the machine</h2>
+      <p>Order History lists every service order raised against the asset, with visit type, location and priority. A Create Service Order button sits on the same tab, so new work can start from the machine itself instead of from a blank form. The Contract tab lists the service and warranty agreements that decide whether the job is billable.</p>
+    </div>
+    <div class="chain">
+      <span class="chip">Asset record</span><span class="arr">→</span><span class="chip">Create Service Order</span><span class="arr">→</span><span class="chip">New order for this asset</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="split wide-right">
+      <div class="stack prose">
+        <p class="label">Tracking</p>
+        <h2>Where the machine has been</h2>
+        <p>Mobile equipment moves between sites. The Tracking tab pairs a map with a location history: each address the asset has been recorded at, newest first, with the date and time. A dispatcher can see where to send a technician, and a manager can confirm a machine is on the site it's billed to.</p>
+      </div>
+      <figure class="shot">
+        <div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/tracking.jpg" alt="Tracking tab with a location history timeline of addresses and dates beside a map with the current position" width="594" height="519"></div>
+        <figcaption>Location history beside a map, with map and satellite views.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="label">Bill of materials</p>
+      <h2>From exploded diagram to parts request</h2>
+      <p>Technicians identify failed parts by looking at the machine, not by knowing part numbers. The BOM viewer shows an exploded diagram of the machine with numbered callouts. Staff choose an assembly on the left, such as the boom or the turntable, hoist and outrigger installation, and the matching parts appear on the right: winch drum, wire rope, hook block, gearbox, boom section.</p>
+    </div>
+    <figure class="shot">
+      <div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/bom.jpg" alt="BOM viewer for a heavy duty crane with assembly list, exploded diagram with numbered callouts and parts list" width="521" height="301"></div>
+      <figcaption>BOM viewer for a heavy-duty crane: assemblies, exploded diagram, parts.</figcaption>
+    </figure>
+    <div class="split" style="margin-top:36px">
+      <div class="stack prose">
+        <h3>One click from a part to a request</h3>
+        <p>Choosing a part opens a request card that already knows its make, model, serial number and unit cost. The technician picks the site and warehouse, sees the quantity available there, enters how many they need and submits. The request then follows the parts chain inside the service order: requested, issued, used, and returned to stock if it isn't needed.</p>
+      </div>
+      <figure class="shot narrow">
+        <div class="window"><div class="bar"><i></i><i></i><i></i></div><img src="img/partreq.jpg" alt="Part request card for a winch drum with make, model, serial number, unit cost, site, warehouse, available quantity and quantity fields" width="220" height="235"></div>
+        <figcaption>Part request for a winch drum, with stock by warehouse.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="stack prose" style="max-width:none">
+      <p class="label">Outcome</p>
+      <h2>What shipped and what I learned</h2>
+      <p>The design covers customers and their locations, the asset list and record with nine tabs, location tracking, the BOM viewer and the part request flow that links assets to inventory and service orders.</p>
+      <h3 style="margin-top:12px">What the design is built to change</h3>
+      <p><strong>Four steps from a broken part to a parts request.</strong> The technician chooses the assembly, chooses the part on the diagram, sets the site, warehouse and quantity, and submits. Make, model, serial number and unit cost are already filled in, so nothing has to be looked up or typed from a manual.</p>
+      <p><strong>Fewer wrong parts ordered.</strong> Picking the part from the machine's own exploded diagram, with its serial number attached, removes a common cause of wrong orders: a part number copied from the wrong model. The two numbers I'd track after launch are the time it takes to raise a request and the share of parts returned to stock unused.</p>
+      <h3 style="margin-top:12px">What I learned: design for recognition, not recall</h3>
+      <p>The BOM viewer works because it starts from what technicians already know. They know what a failed part looks like on the machine, not its part number, so the exploded diagram is the way in, not a search box. After that, the system fills in everything it already knows. The request card arrives with make, model, serial number and unit cost, so the technician only adds the site, warehouse and quantity. Showing the stock at that warehouse before they submit means they don't raise a request that can't be filled.</p>
+      <p>Next, I'd link the diagram and the parts list both ways, so tapping a callout highlights its row and selecting a row highlights the callout. I'd also design a tablet layout, since this lookup often happens beside the machine rather than at a desk.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div><strong>Rakesh Bhardwaj</strong><br>Senior Product Designer · Gurugram, India<br><span class="sel">rakesh_bhardwaj@live.com</span></div>
+    <div><a href="../index.html">All case studies</a><br><a href="https://www.linkedin.com/in/rakesh-bhardwaj-b18b645b/">LinkedIn</a></div>
+  </footer>
+</div>
+
+</body></html>

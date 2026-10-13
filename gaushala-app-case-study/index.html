@@ -1,0 +1,410 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Gaushala App Case Study</title>
+<meta name="description" content="Case study by Rakesh Bhardwaj: a herd-management app for a gaushala, with AI muzzle recognition.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+:root{
+  --ground:#F2F3EE; --surface:#FFFFFF; --ink:#1C1B33; --muted:#5A5C6E; --line:#D9DBD2;
+  --band:#211A5C; --band-ink:#EEEBFF; --band-muted:#B7B0E8;
+  --accent:#B42F78; --accent-soft:#F6E3EE;
+  --todo-bg:#FFF6D6; --todo-line:#D9B64A; --todo-ink:#5E4A06;
+  --pain-bg:#FBE3E3; --pain-ink:#8E2A2A; --opp-bg:#DDF1E2; --opp-ink:#1E6B3A; --pos:#2E9E64; --neg:#D2453D;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#12131C; --surface:#1B1C29; --ink:#ECEBF4; --muted:#A5A6B8; --line:#2E3042;
+    --band:#1A1449; --band-ink:#EEEBFF; --band-muted:#A79FE0;
+    --accent:#E0589E; --accent-soft:#3A1E31;
+    --todo-bg:#3A3212; --todo-line:#9C8430; --todo-ink:#F3E2A2;
+    --pain-bg:#3A1F22; --pain-ink:#F2B8B5; --opp-bg:#173526; --opp-ink:#A6E3BF; --pos:#5CC98E; --neg:#F07A72;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#12131C; --surface:#1B1C29; --ink:#ECEBF4; --muted:#A5A6B8; --line:#2E3042;
+  --band:#1A1449; --band-ink:#EEEBFF; --band-muted:#A79FE0;
+  --accent:#E0589E; --accent-soft:#3A1E31;
+  --todo-bg:#3A3212; --todo-line:#9C8430; --todo-ink:#F3E2A2;
+  --pain-bg:#3A1F22; --pain-ink:#F2B8B5; --opp-bg:#173526; --opp-ink:#A6E3BF; --pos:#5CC98E; --neg:#F07A72;
+}
+*{box-sizing:border-box}
+body{background:var(--ground); color:var(--ink); font-family:var(--body); font-size:17px; line-height:1.65; margin:0}
+.wrap{max-width:1080px; margin:0 auto; padding-inline:24px}
+.prose{max-width:680px}
+h1,h2,h3{font-family:var(--display); text-wrap:balance; line-height:1.08; margin:0}
+h1{font-size:clamp(2.5rem,6.5vw,4.6rem); font-weight:800; letter-spacing:-0.02em}
+h2{font-size:clamp(1.7rem,3.4vw,2.4rem); font-weight:700; letter-spacing:-0.01em}
+h3{font-size:1.2rem; font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--mono); font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent)}
+.band .eyebrow{color:#F08BC0}
+a{color:var(--accent); text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:2px}
+section{padding-block:72px}
+.stack{display:flex; flex-direction:column; gap:18px}
+.todo{background:var(--todo-bg); color:var(--todo-ink); border:1px dashed var(--todo-line); border-radius:6px; padding:10px 14px; font-size:.92rem; line-height:1.5}
+.todo b{font-family:var(--mono); font-weight:500; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; margin-right:6px}
+span.todo{display:inline; padding:1px 6px}
+
+
+/* journey map */
+.persona{display:flex; gap:16px; align-items:center; margin-bottom:22px}
+.avatar{flex:0 0 auto; width:52px; height:52px; border-radius:50%; background:var(--accent-soft); color:var(--accent); display:grid; place-items:center; font-family:var(--display); font-weight:700; font-size:1.1rem}
+.persona p{color:var(--muted); font-size:.98rem}
+.persona strong{color:var(--ink)}
+.journey-scroll{overflow-x:auto; padding-bottom:8px}
+.journey{display:grid; grid-template-columns:110px repeat(5,minmax(150px,1fr)); gap:10px 12px; min-width:900px; font-size:.92rem; line-height:1.45}
+.journey .rowlabel{font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); padding-top:4px}
+.journey .stage{background:var(--accent-soft); color:var(--accent); font-family:var(--display); font-weight:700; text-align:center; padding:10px 8px; border-radius:8px}
+.journey .cell{padding:2px 2px}
+.journey .think{font-style:italic; color:var(--ink)}
+.journey .feel{grid-column:2 / span 5}
+.journey .feel svg{display:block; width:100%; height:auto; overflow:visible}
+.journey .feel-label{text-align:center; color:var(--muted); font-size:.88rem; margin-top:-4px}
+.journey .pain{background:var(--pain-bg); color:var(--pain-ink); border-radius:8px; padding:10px 12px}
+.journey .opp{background:var(--opp-bg); color:var(--opp-ink); border-radius:8px; padding:10px 12px}
+.journey .divider{grid-column:1 / -1; border-top:1px solid var(--line); margin-block:4px}
+
+/* header */
+.top{padding-block:28px 0; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; font-size:.9rem; color:var(--muted)}
+.top strong{color:var(--ink); font-weight:600}
+.hero{padding-block:56px 40px; display:grid; gap:28px}
+.hero .lede{font-size:1.2rem; color:var(--muted); max-width:640px}
+.meta{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px 28px; border-top:1px solid var(--line); padding-top:22px}
+@media (max-width:640px){ .meta{grid-template-columns:1fr} }
+.meta dt{font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+.meta dd{margin:4px 0 0; font-size:.98rem}
+
+/* bands of phones */
+.band{background:var(--band); color:var(--band-ink)}
+.band p{color:var(--band-muted)}
+.band h2,.band h3{color:var(--band-ink)}
+.phones{display:flex; gap:22px; overflow-x:auto; padding-block:8px 18px; scrollbar-width:thin}
+.phone{margin:0; flex:0 0 auto; display:flex; flex-direction:column; gap:10px; width:176px}
+.phone img{width:176px; height:auto; display:block; border-radius:18px; box-shadow:0 18px 40px rgba(8,4,40,.45)}
+.phones.light .phone figcaption, .split .phone figcaption{color:var(--muted)}
+.phone figcaption{font-family:var(--mono); font-size:.74rem; color:var(--band-muted); line-height:1.4}
+.hero-phones{display:flex; gap:26px; justify-content:center; align-items:flex-start; padding-block:48px; overflow-x:auto}
+.hero-phones .phone:nth-child(2){margin-top:36px}
+.hero-phones .phone:nth-child(3){margin-top:12px}
+
+/* two col */
+.split{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:48px; align-items:start}
+@media (max-width:820px){ .split{grid-template-columns:1fr; gap:32px} section{padding-block:56px} }
+
+/* record card */
+.record{background:var(--surface); border:1px solid var(--line); border-radius:12px; overflow:hidden}
+.record header{display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:14px 18px; border-bottom:1px solid var(--line)}
+.record header span{font-family:var(--mono); font-size:.8rem; color:var(--muted)}
+.record dl{margin:0; display:grid; grid-template-columns:auto 1fr}
+.record dt,.record dd{padding:9px 18px; border-bottom:1px solid var(--line); margin:0; font-size:.9rem}
+.record dt{font-family:var(--mono); font-size:.78rem; color:var(--muted); white-space:nowrap}
+.record dl > :nth-last-child(-n+2){border-bottom:0}
+
+/* IA */
+.ia{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:24px; overflow-x:auto}
+.ia-root{display:flex; justify-content:center}
+.node{font-family:var(--mono); font-size:.82rem; border:1px solid var(--line); background:var(--ground); border-radius:8px; padding:8px 12px; text-align:center; white-space:nowrap}
+.node.root{background:var(--ink); color:var(--ground); border-color:var(--ink)}
+.node.key{border-color:var(--accent); color:var(--accent); background:var(--accent-soft)}
+.ia-row{display:grid; grid-template-columns:repeat(4,minmax(130px,1fr)); gap:14px; margin-top:28px; position:relative; min-width:600px}
+.ia-row::before{content:""; position:absolute; top:-15px; left:12.5%; right:12.5%; border-top:1px solid var(--muted)}
+.ia-col{display:flex; flex-direction:column; gap:8px; align-items:stretch; position:relative}
+.ia-col::before{content:""; position:absolute; top:-15px; left:50%; height:15px; border-left:1px solid var(--muted)}
+.ia-sub{display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:6px}
+.ia-sub .node{font-size:.74rem; padding:6px 8px}
+.ia-note{font-size:.85rem; color:var(--muted); margin-top:18px}
+
+/* decisions */
+.decisions{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:28px}
+.decision h3{margin-bottom:8px}
+.decision p{font-size:.96rem; color:var(--muted)}
+.band .decision p{color:var(--band-muted)}
+
+.web img{width:100%; max-width:760px; height:auto; display:block; border-radius:10px; border:1px solid var(--line); box-shadow:0 12px 30px rgba(20,20,50,.12)}
+.web figure{margin:0; display:flex; flex-direction:column; gap:10px}
+.web figcaption{font-size:.88rem; color:var(--muted)}
+
+footer{border-top:1px solid var(--line); padding-block:40px 64px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:20px; font-size:.92rem; color:var(--muted)}
+footer strong{color:var(--ink)}
+.sel{user-select:all; font-family:var(--mono); font-size:.85rem; color:var(--ink)}
+@media (prefers-reduced-motion:no-preference){
+  .hero-phones .phone img{transition:transform .4s ease}
+  .hero-phones .phone:hover img{transform:translateY(-6px)}
+}
+</style>
+
+<div class="wrap">
+  <div class="top"><span><strong>Rakesh Bhardwaj</strong> · Senior Product Designer</span><span>Case study · Mobile + web</span></div>
+
+  <header class="hero">
+    <p class="eyebrow">Gaushala App · Herd management with AI identification</p>
+    <h1>Knowing every cow by her nose</h1>
+    <p class="lede" style="max-width:none">A herd-management product for a gaushala (cow shelter). Staff register each animal, keep its health, milk and breeding records, and identify it later by scanning its muzzle, whose ridge pattern is as unique as a fingerprint.</p>
+    <dl class="meta">
+      <div><dt>Role</dt><dd>UI/UX Consultant (freelance), via Agentix Solutions</dd></div>
+      <div><dt>Client</dt><dd>ISKCON Gaushala</dd></div>
+      <div><dt>Platforms</dt><dd>Android app, admin web</dd></div>
+      <div style="grid-column:1/-1"><dt>Scope</dt><dd>Competitive research, information architecture, UX for the AI/ML muzzle-recognition flow, UI for the Android app and admin web, HTML prototypes, developer handoff, and input on the data structure</dd></div>
+    </dl>
+  </header>
+</div>
+
+<div class="band">
+  <div class="wrap hero-phones" role="list" aria-label="Key screens">
+    <figure class="phone" role="listitem"><img src="img/scan.jpg" alt="Scan Muzzle screen with a camera frame and options to scan live or from a photo" width="176" height="380"><figcaption>Scan muzzle</figcaption></figure>
+    <figure class="phone" role="listitem"><img src="img/recognize.jpg" alt="Cattle Recognition result showing the matched muzzle photo and the cow's record" width="166" height="374"><figcaption>Match + record</figcaption></figure>
+    <figure class="phone" role="listitem"><img src="img/home.jpg" alt="Home screen with Add Cattle, Recognize Cattle, My Cattle, report shortcuts and a medical alert" width="176" height="372"><figcaption>Home</figcaption></figure>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="split">
+    <div class="stack prose" style="max-width:none">
+      <p class="eyebrow">The problem</p>
+      <h2>Every record depends on knowing which animal you are looking at</h2>
+      <p>A gaushala cares for cattle for their whole lives, including old, sick and rescued animals. Ear tags fall off or become unreadable, and many animals arrive with no history at all. When identification is shaky, health notes, vaccination dates and milk yields end up attached to the wrong cow, or to no cow.</p>
+      <p>The product had to make identification quick and reliable in a shed, and then make the daily records around each animal easy to log and easy to read back.</p>
+    </div>
+    <div class="stack">
+      <p class="eyebrow">Who uses it</p>
+      <div class="decisions" style="grid-template-columns:1fr">
+        <div class="decision"><h3>Caretakers and field staff</h3><p>Work on a phone in the shed. They register animals, scan to identify them, and log health checks, milk yields and events such as vaccination or spraying.</p></div>
+        <div class="decision"><h3>Owner and manager</h3><p>Work on the web dashboard. They see the whole herd, medical emergencies, feed stock and consumption, staff, and revenue or loss per gaushala.</p></div>
+      </div>
+    </div>
+    <div style="border:1px solid var(--line); background:var(--surface); border-radius:8px; padding:18px 22px; font-size:1.02rem; line-height:1.6; color:var(--ink); grid-column:1/-1"><strong style="color:var(--ink)">How I approached research.</strong> The research combined two things: a competitive analysis of herd-management and similar apps, such as My Cattle Manager, and working assumptions about daily work in a gaushala. The analysis showed what records farms already track and where those apps fall short, mainly that they rely on ear tags and manual entry. The assumptions covered life in the shed: records kept in paper registers or from memory, tags that go missing, one phone shared by several staff, and weak signal. Together they shaped every design decision on this page, and the next round would validate them with caretakers.</div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="stack prose" style="max-width:none; margin-bottom:26px">
+      <p class="eyebrow">A caretaker's shift</p>
+      <h2>Designing for a shared phone in a cowshed</h2>
+      <p>I mapped one caretaker's shift from start to hand-over to find where the app had to work hardest. The low points were logging records on a weak network and not knowing whether a medical alert had reached anyone. Several opportunities in the bottom row, such as the scan fallbacks, photo-first records and status colours, shaped the design decisions further down.</p>
+    </div>
+    <div class="persona">
+      <div class="avatar" aria-hidden="true">R</div>
+      <p><strong>Ramu, 38 · Caretaker, ISKCON gaushala.</strong> Goal: keep every cow's health, milk and breeding records right, without paperwork. Shares one Android phone with the shift and works in the shed.</p>
+    </div>
+    <div class="journey-scroll" role="region" aria-label="Caretaker journey map, scroll sideways on small screens" tabindex="0">
+      <div class="journey">
+        <div></div>
+        <div class="stage">Start shift</div><div class="stage">Identify cow</div><div class="stage">Log records</div><div class="stage">Emergency</div><div class="stage">Hand over</div>
+
+        <div class="rowlabel">Actions</div>
+        <div class="cell">Picks up the shared phone, signs in with a PIN, checks home alerts</div>
+        <div class="cell">Scans the muzzle; the app matches the cow or registers a new one</div>
+        <div class="cell">Logs milk yield, health check, vaccination and feed</div>
+        <div class="cell">Spots a sick cow and raises a medical alert</div>
+        <div class="cell">Finishes pending entries; the next shift takes the phone</div>
+
+        <div class="rowlabel">Touchpoints</div>
+        <div class="cell">PIN login, home screen, alert banner</div>
+        <div class="cell">Scan camera, saved photo, Tag ID fallback</div>
+        <div class="cell">Cattle profile, record forms</div>
+        <div class="cell">Medical alert, vet, manager's phone</div>
+        <div class="cell">My Cattle list, status colours, admin web</div>
+
+        <div class="rowlabel">Thinking</div>
+        <div class="cell think">"What's urgent today?"</div>
+        <div class="cell think">"Is this Kamdhenu or her calf?"</div>
+        <div class="cell think">"So many fields, and the network is gone."</div>
+        <div class="cell think">"Has the doctor seen my alert?"</div>
+        <div class="cell think">"Did I miss any cow?"</div>
+
+        <div class="rowlabel" style="align-self:center">Feeling</div>
+        <div class="feel" role="img" aria-label="Feeling across the shift: rushed at start, delighted when the scan works, tired while logging, stressed during an emergency, accomplished at hand-over.">
+          <svg viewBox="0 0 1000 140" preserveAspectRatio="xMidYMid meet">
+            <line x1="0" y1="62" x2="1000" y2="62" stroke="var(--line)" stroke-width="2" stroke-dasharray="6 6"/>
+            <path d="M95 66 C 180 66, 230 18, 297 18 C 380 18, 420 92, 500 96 C 580 100, 640 124, 703 124 C 790 124, 830 34, 905 30" fill="none" stroke="var(--accent)" stroke-width="3"/>
+            <circle cx="95" cy="66" r="9" fill="var(--muted)"/>
+            <circle cx="297" cy="18" r="9" fill="var(--pos)"/>
+            <circle cx="500" cy="96" r="9" fill="var(--neg)"/>
+            <circle cx="703" cy="124" r="9" fill="var(--neg)"/>
+            <circle cx="905" cy="30" r="9" fill="var(--pos)"/>
+          </svg>
+        </div>
+        <div></div>
+        <div class="feel-label">Rushed</div><div class="feel-label">Delighted</div><div class="feel-label">Tired</div><div class="feel-label">Stressed</div><div class="feel-label">Accomplished</div>
+
+        <div class="rowlabel">Pain points</div>
+        <div class="pain">Shared phone, forgotten PINs, wet or gloved hands</div>
+        <div class="pain">Scan fails in dim light or when the cow moves</div>
+        <div class="pain">Long forms, weak network, English-heavy labels</div>
+        <div class="pain">No confirmation the alert reached anyone</div>
+        <div class="pain">Hard to see which cows still need records</div>
+
+        <div class="rowlabel">Opportunities</div>
+        <div class="opp">Quick PIN switch per worker, today's tasks first</div>
+        <div class="opp">Framing guides, retry tips, one-tap Tag ID fallback</div>
+        <div class="opp">Photo-first, defaults, Hindi, offline save and sync</div>
+        <div class="opp">Escalate to vet and manager, show "seen" status</div>
+        <div class="opp">Pending-records count, automatic shift summary</div>
+      </div>
+    </div>
+    <div style="margin-top:18px; border:1px solid var(--line); background:var(--surface); border-radius:8px; padding:12px 16px; font-size:.95rem; color:var(--muted)"><strong style="color:var(--ink)">How I built this map.</strong> Ramu is an assumption-based proto-persona, built from a competitive review of herd-management apps such as My Cattle Manager. It covers breeding, health, milk and finance records, works offline and lets a team share one farm account, but it relies on manual records and photos, with no biometric identification. That gap, plus the realities of a shared phone in a shed, shaped this journey. The next step would be to validate it with caretakers at the gaushala.</div>
+  </section>
+
+  <section class="split" style="padding-top:0">
+    <div class="stack prose" style="max-width:none">
+      <p class="eyebrow">Mapping the domain</p>
+      <h2>One cattle record, many kinds of data</h2>
+      <p>Before drawing screens, I listed what a single animal's record has to hold. The list came out long and mixed: identity, lineage, biometrics, health history, milk and feed. Some fields are needed on day one, and others build up over the animal's life.</p>
+      <p>That split shaped the registration flow. It asks only for identity and media up front, then moves health and events into later steps and into the record itself.</p>
+    </div>
+    <article class="record" aria-label="Fields in one cattle record">
+      <header><h3>Cattle record</h3><span>SN5342739 · Aadhira</span></header>
+      <dl>
+        <dt>Identity</dt><dd>Tag No., Cattle ID, breed, gender, height, weight, date of birth</dd>
+        <dt>Lineage</dt><dd>Mother, father, family history</dd>
+        <dt>Biometrics</dt><dd>Muzzle photo and video, 360° video, physical marks</dd>
+        <dt>Milk</dt><dd>Lactating or not, A1 / A2 cow or buffalo, daily morning and evening yield</dd>
+        <dt>Health</dt><dd>Vaccination, deworming, disease, seasonal issues, fertility stage</dd>
+        <dt>Care</dt><dd>Diet and feed type by age or illness</dd>
+        <dt>Status</dt><dd>Pregnant, inseminated / mated, update needed</dd>
+      </dl>
+    </article>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="eyebrow">Information architecture</p>
+      <h2>Three things staff do every day, one place to read everything</h2>
+      <p>The home screen leads with the three daily jobs. Reports sit underneath as a grid, one tile per record type. A scan button sits in the centre of the tab bar, so identification is one tap away from anywhere in the app.</p>
+    </div>
+    <div class="ia" role="img" aria-label="App structure: Home leads to Add Cattle, Recognize Cattle, My Cattle and Reports. Reports has Health, Milk, Fertility, Feed, Events and Inventory.">
+      <div class="ia-root"><div class="node root">Home</div></div>
+      <div class="ia-row">
+        <div class="ia-col"><div class="node">Add cattle</div><div class="ia-sub" style="grid-template-columns:1fr"><div class="node">Info → Health → Events</div></div></div>
+        <div class="ia-col"><div class="node key">Recognize cattle</div><div class="ia-sub" style="grid-template-columns:1fr"><div class="node">Live scan · From photo</div></div></div>
+        <div class="ia-col"><div class="node">My cattle</div><div class="ia-sub" style="grid-template-columns:1fr"><div class="node">All cattle · Events</div></div></div>
+        <div class="ia-col"><div class="node">Reports</div>
+          <div class="ia-sub"><div class="node">Health</div><div class="node">Milk</div><div class="node">Fertility</div><div class="node">Feed</div><div class="node">Events</div><div class="node">Inventory</div></div>
+        </div>
+      </div>
+      <p class="ia-note">Scan is also a fixed button in the tab bar, reachable from every screen.</p>
+    </div>
+  </section>
+</div>
+
+<div class="band">
+  <section class="wrap">
+    <div class="split">
+      <div class="stack prose" style="max-width:none">
+        <p class="eyebrow">Key flow · AI recognition</p>
+        <h2>Designing around a model that can miss</h2>
+        <p>Muzzle recognition uses a machine-learning model to match a photo of the nose against registered animals. A model like this fails in ordinary conditions: a wet nose, a moving head, poor light in the shed. So the flow gives staff a way through when the camera doesn't work.</p>
+      </div>
+      <div class="decisions">
+        <div class="decision"><h3>Two ways to scan</h3><p>A live camera scan, or a scan from a photo already on the phone when the animal won't stay still.</p></div>
+        <div class="decision"><h3>Tag ID as fallback</h3><p>The result screen keeps a Tag ID field, so staff can confirm or find the animal by tag if the match is doubtful.</p></div>
+        <div class="decision"><h3>Show the evidence</h3><p>The match shows the muzzle image next to breed, status and created date, so staff can check it's the right cow before logging anything.</p></div>
+      </div>
+    </div>
+    <div class="phones" style="margin-top:36px" role="list" aria-label="Recognition and registration screens">
+      <figure class="phone" role="listitem"><img src="img/scan.jpg" alt="Scan Muzzle camera screen" width="176" height="380"><figcaption>1 · Scan muzzle, live or from photo</figcaption></figure>
+      <figure class="phone" role="listitem"><img src="img/recognize.jpg" alt="Recognition result with cattle information" width="166" height="374"><figcaption>2 · Match with record summary</figcaption></figure>
+      <figure class="phone" role="listitem"><img src="img/addmenu.jpg" alt="Action sheet offering Add Cattle or Recognize Cattle" width="176" height="372"><figcaption>Scan button: add or recognize</figcaption></figure>
+      <figure class="phone" role="listitem"><img src="img/add.jpg" alt="Add New Cattle form, step one of three, with photo, video and muzzle uploads" width="176" height="416"><figcaption>New animal: step 1 of 3, with muzzle media for enrolment</figcaption></figure>
+    </div>
+    <div class="stack prose" style="max-width:none; margin-top:40px">
+      <h3>Working with engineering</h3>
+      <p><strong>Prototypes in place of static specs.</strong> I built HTML prototypes of the main flows and walked the development team through them, so they could click through the scan, match and registration steps themselves. That answered most "what happens when…" questions before any code was written.</p>
+      <p><strong>Shaping the data with the database engineers.</strong> I worked with the database engineers on the record structure and how data flows through it, so the model matched what the screens needed: the muzzle images captured at registration, and the health, milk, feed and event entries logged against each animal.</p>
+    </div>
+  </section>
+</div>
+
+<div class="wrap">
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="eyebrow">Iteration · My cattle</p>
+      <h2>Three versions of the herd list</h2>
+      <p>The herd list is the screen staff open most, so it went through three rounds in the file. Each round moved information closer to the row, so staff can act without opening every profile.</p>
+    </div>
+    <div class="decisions">
+      <div class="decision"><h3>Version 1</h3><p>Totals as two large tiles (115 total, 45 needing an update). Each row carries a coloured serial-number badge that flags a record needing an update.</p></div>
+      <div class="decision"><h3>Version 2</h3><p>Totals move into the header to give the list more room. Each row now shows when it was last updated ("3 days ago"), so a stale record is visible without opening it.</p></div>
+      <div class="decision"><h3>Version 3</h3><p>"Add new cattle" moves into the header, and tabs split All cattle from Events. Events is a dated checklist of herd-wide tasks such as spraying and vaccination.</p></div>
+    </div>
+  </section>
+</div>
+
+<div class="band">
+  <section class="wrap">
+    <div class="phones" role="list" aria-label="Herd list iterations">
+      <figure class="phone" role="listitem"><img src="img/list1.jpg" alt="Herd list version 1 with total and update-needed tiles" width="176" height="377"><figcaption>V1 · Summary tiles</figcaption></figure>
+      <figure class="phone" role="listitem"><img src="img/list2.jpg" alt="Herd list version 2 with last-updated times on each row" width="176" height="373"><figcaption>V2 · Last update per row</figcaption></figure>
+      <figure class="phone" role="listitem"><img src="img/list3.jpg" alt="Herd list version 3 with All Cattle and Events tabs" width="176" height="373"><figcaption>V3 · All cattle / Events tabs</figcaption></figure>
+      <figure class="phone" role="listitem"><img src="img/events.jpg" alt="Events tab showing dated herd tasks with checkboxes" width="176" height="373"><figcaption>V3 · Events checklist</figcaption></figure>
+    </div>
+  </section>
+</div>
+
+<div class="wrap">
+  <section>
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="eyebrow">Records and reports</p>
+      <h2>One profile per animal, one report per question</h2>
+      <p>Each animal's profile opens on its photo, serial number and muzzle video, with tabs for Information, Health, Milk and Events records. Health entries are grouped by date, with fertility stage, disease, vaccine and notes.</p>
+      <p>Reports answer herd-level questions: how many cows, heifers, bulls, steers, weaners and calves there are; how much milk the lactating cows gave this week, month or year; and how that splits between the dairy and the calves.</p>
+    </div>
+    <div class="phones light" role="list" aria-label="Profile and report screens">
+      <figure class="phone" role="listitem"><img src="img/health.jpg" alt="Cattle profile with Health Records tab" width="175" height="373"><figcaption>Profile · health records</figcaption></figure>
+      <figure class="phone" role="listitem"><img src="img/milkrec.jpg" alt="Cattle profile with Milk Records tab and daily morning and evening yields" width="175" height="403"><figcaption>Profile · milk records</figcaption></figure>
+      <figure class="phone" role="listitem"><img src="img/herd.jpg" alt="All Cattle report with a breakdown chart by cattle group" width="176" height="355"><figcaption>Herd composition</figcaption></figure>
+      <figure class="phone" role="listitem"><img src="img/milk2.jpg" alt="Milk report with lactating cows, total milk and a trend chart" width="176" height="355"><figcaption>Milk report</figcaption></figure>
+      <figure class="phone" role="listitem"><img src="img/filters.jpg" alt="Filter sheet by cattle group: cow, heifers, bulls, steers, weaners, calves" width="176" height="355"><figcaption>Filter by cattle group</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="web" style="padding-top:0">
+    <div class="stack prose" style="max-width:none; margin-bottom:28px">
+      <p class="eyebrow">Admin web</p>
+      <h2>The same record, built for a desk</h2>
+      <p>Managers use a web dashboard with the same data model. Empty states on a new profile tell staff what to add next. Events and health checks open in a side drawer, so the profile stays in view. A full health history table records vitals (temperature, pulse, respiratory rate) next to medicine, supplements and feed.</p>
+    </div>
+    <div class="split">
+      <figure><img src="img/web_event.jpg" alt="Web cattle profile with Add Event drawer open" width="565" height="440"><figcaption>Cattle profile with the Add Event drawer</figcaption></figure>
+      <figure><img src="img/web_health.jpg" alt="Web health history table with status, disease, medicine, vitals and pagination" width="544" height="374"><figcaption>Health history with vitals and a status filter</figcaption></figure>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="split">
+      <div class="stack prose" style="max-width:none">
+        <p class="eyebrow">Onboarding</p>
+        <h2>Sign-in built for shared phones</h2>
+        <p>Staff sign in with the gaushala's registration number, a one-time PIN and their phone number, then set a 4-digit PIN for daily use. That suits workers who share devices and may not have an email address.</p>
+      </div>
+      <div class="phones light" style="padding-top:0" role="list" aria-label="Onboarding screens">
+        <figure class="phone" role="listitem"><img src="img/login.jpg" alt="Login screen with gaushala registration number, one-time PIN and phone number" width="176" height="381"><figcaption>Login</figcaption></figure>
+        <figure class="phone" role="listitem"><img src="img/pin.jpg" alt="Create New PIN screen with numeric keypad" width="175" height="381"><figcaption>Create PIN</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="stack prose" style="max-width:none">
+      <p class="eyebrow">Outcome</p>
+      <h2>What shipped and what I'd do next</h2>
+      <p>I delivered 50+ mobile screens and a set of admin web screens, covering onboarding, registration, recognition, records and six report types.</p>
+      <h3 style="margin-top:28px">What I'd change in the recognition flow</h3>
+      <p><strong>Treat a scan as a suggestion, not an answer.</strong> Right now the result screen shows one animal and a "Start Now" button. If the model picks the wrong cow, the caretaker logs milk or a treatment against the wrong record, and nothing flags it. Next time I'd show a confidence state ("Strong match" or "Check the tag"), put the stored muzzle photo next to the new scan, and ask for one tap to confirm before anything is written to the record.</p>
+      <p><strong>Make failure cheap.</strong> In a dim shed with a moving animal, the first scan will often fail, and the Tag ID fallback only appears on the result screen. I'd capture automatically once the muzzle is framed and sharp, give live hints such as "Move closer" or "Need more light", and after two failed tries offer Tag ID search on the same screen. Scans would also queue offline and sync when the network comes back.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div><strong>Rakesh Bhardwaj</strong><br>Senior Product Designer · Gurugram, India<br><span class="sel">rakesh_bhardwaj@live.com</span></div>
+    <div><a href="../index.html">All case studies</a><br><a href="https://www.linkedin.com/in/rakesh-bhardwaj-b18b645b/">LinkedIn</a><br><a href="https://www.figma.com/design/C8nkzAb7nukMZvP7eOmGOi/Untitled?node-id=0-1">Working Figma file</a></div>
+  </footer>
+</div>
+
+</body></html>
