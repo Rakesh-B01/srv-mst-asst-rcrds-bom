@@ -219,31 +219,25 @@ footer strong{color:var(--ink)}
   </footer>
 </div>
 <script>
-(function(){
-  var NAME = "Rakesh_Bhardwaj_Senior_Product_Designer";
-  var host = window["cl" + "aude"];   // the viewer's built-in object; its name is fixed by the platform
-  var saver = null;
-  if (host && host.use) host.use("downloads").then(function(d){ saver = d; });
-
-  async function fileData(ext){
-    if (ext === "pdf") return (await fetch("resume/" + NAME + ".pdf")).blob();
-    var b64 = (await (await fetch("resume/" + NAME + ".docx.b64.txt")).text()).trim();
-    return new Blob([Uint8Array.from(atob(b64), function(c){ return c.charCodeAt(0); })]);
-  }
-
-  document.addEventListener("click", async function(e){
-    var el = e.target.closest("[data-dl]"); if (!el) return;
-    var ext = el.dataset.dl, filename = NAME + "." + ext;
-    if (!saver && ext === "pdf") return;   // outside the viewer, the plain PDF link does the job
+// Resume downloads: fetch the file and save it, so it downloads instead of opening in a tab.
+document.querySelectorAll("a[data-resume]").forEach(function (link) {
+  link.addEventListener("click", async function (e) {
     e.preventDefault();
-    var data = await fileData(ext);
-    if (saver) { try { await saver.save({filename: filename, data: data}); } catch(err) {} return; }
-    var a = document.createElement("a");
-    a.href = URL.createObjectURL(data); a.download = filename;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+    var url = link.getAttribute("href");
+    try {
+      var res = await fetch(url);
+      if (!res.ok) throw new Error(res.status);
+      var blobUrl = URL.createObjectURL(await res.blob());
+      var a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = url.split("/").pop();
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(blobUrl); }, 1000);
+    } catch (err) {
+      window.location.href = url;   // if anything fails, open the file directly
+    }
   });
-})();
+});
 </script>
 
 </body></html>
